@@ -11,7 +11,8 @@ Do you want to play a curseforge modpack but do not want to be forced to sign up
 7. Now you can run the install script. Take note of the name of the zip file you downloaded and run the following command in your console. If you don't have python installed already, you will need to go and install that first.\
 `python InstallModPack.py <zip file name here>`
 8. Follow the prompts in the console until the install completes.
-9. Open your Minecraft launcher, a new profile called something like "modpack - <modname>" should be available to play. 10. Aaaaand you are done!
+9. Open your Minecraft launcher, a new profile called something like "modpack - modnamehere" should be available to play.
+10. Aaaaand you are done!
 
 If you wish to skip certain parts of the installation process (eg. you want to reinstall a modpack that was recently downloaded but you messed with the files and it does not work anymore), you can add any of the following flags after the run command\
 `-nozip` Skips unzipping the specified modpack file and refreshing the temp folder (use when you already unzipped the mod before and want to perform a reinstall without having to redownload the mods).\
