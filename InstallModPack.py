@@ -150,7 +150,7 @@ def main():
 
     if (not noforge):
         #all the mods have been aquired, now to get forge and install it
-        forgename = 'forge-'+minecraftVersion+'-'+forgeVersion+'-installer-win.exe';
+        forgename = 'forge-'+minecraftVersion+'-'+forgeVersion+'-installer.jar';
         forgeurl = 'https://files.minecraftforge.net/maven/net/minecraftforge/forge/'+minecraftVersion+'-'+forgeVersion+'/'+forgename;
         print("\nDownloading " + forgename);
         try:
@@ -166,8 +166,8 @@ def main():
         forgeF.close();
 
         print("Running forge installer (It should come up as a seperate window)");
-        ret = subprocess.call(os.path.join(tempDir, forgename));
-        if (ret != 0):
+        ret = subprocess.run(["java", "-jar", os.path.join(tempDir, forgename)], stdout=subprocess.DEVNULL, stderr=subprocess.STDOUT);
+        if (ret.returncode != 0):
             print("Error installing forge");
             sys.exit();
 
@@ -185,8 +185,12 @@ def main():
         forgevname = minecraftVersion+'-forge'+minecraftVersion+'-'+forgeVersion;
         print("\tUsing forge version: " + forgevname);
         if (not os.path.isdir(os.path.join(os.getenv('APPDATA'), ".minecraft", "versions", forgevname))):
-            print("Could not find required forge version (did you install it?). Exiting...");
-            sys.exit();
+            #the old version name is not found, try the new name
+            print("\tOld naming scheme not found, trying new naming scheme...")
+            forgevname = minecraftVersion+'-forge'+'-'+forgeVersion;
+            if (not os.path.isdir(os.path.join(os.getenv('APPDATA'), ".minecraft", "versions", forgevname))):
+                print("Could not find required forge version (did you install it?). Exiting...");
+                sys.exit();
 
         #the profile is where we expect it to be, make a new profile (or overwrite a previous one if the user is stupid enough to name their profile after a mod pack)
         profF = open(minecraftProfLoc, "r");
