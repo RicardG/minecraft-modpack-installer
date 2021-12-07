@@ -125,7 +125,7 @@ def main():
         #spawn 4 threads
         for i in range(0, 4):
             thr = threading.Thread(target=DownloadModsThread, args=(data,));
-            thr.setDaemon(True);
+            thr.daemon = True;
             thr.start();
 
         #wait for all the threads to finish
