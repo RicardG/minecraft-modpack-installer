@@ -16,6 +16,7 @@ tempDir = "modtemp";
 manifestLoc = os.path.join(tempDir, "manifest.json");
 modsLoc = os.path.join(tempDir, "mods");
 minecraftProfLoc = os.path.join(os.getenv("APPDATA"), os.path.join(".minecraft", "launcher_profiles.json"));
+downloadRetryCount = 2
 
 def main():
     print("Minecraft modpack installer by Ricard Grace");
@@ -99,54 +100,58 @@ def main():
             continue;
 
     if (not nodown):
-        #time to download all the mods
-        #generate a list of mods we need to get and their urls
-        print("\nGenerating mod urls...");
-        fileList = [];
-        for mod in j["files"]:
-            fileList.append((str(mod["projectID"]),str(mod["fileID"])));
-        print("\tDone!");
-        numMods = len(fileList);
-        print(f"\tFound {numMods} mods");
+        while (True): #keep retrying until no errors
+            #time to download all the mods
+            #generate a list of mods we need to get and their urls
+            print("\nGenerating mod urls...");
+            fileList = [];
+            for mod in j["files"]:
+                fileList.append((str(mod["projectID"]),str(mod["fileID"])));
+            print("\tDone!");
+            numMods = len(fileList);
+            print(f"\tFound {numMods} mods");
 
-        print("\nDownloading mods:");
-        #create the folder we are going to store the mods in if it does not exist
-        if (os.path.isdir(modsLoc)):
-            #delete it and remake it
-            shutil.rmtree(modsLoc);
-            time.sleep(2);
-        os.mkdir(modsLoc);
+            print("\nDownloading mods:");
+            #create the folder we are going to store the mods in if it does not exist
+            if (os.path.isdir(modsLoc)):
+                #delete it and remake it
+                shutil.rmtree(modsLoc);
+                time.sleep(2);
+            os.mkdir(modsLoc);
 
-        #thread code here
-        errorList = [];
-        modListLock = threading.Lock();
-        errorListLock = threading.Lock();
-        data = DownloadThreadData(fileList, errorList, modListLock, errorListLock)
-        #spawn 4 threads
-        for i in range(0, 4):
-            thr = threading.Thread(target=DownloadModsThread, args=(data,));
-            thr.daemon = True;
-            thr.start();
+            #thread code here
+            errorList = [];
+            modListLock = threading.Lock();
+            errorListLock = threading.Lock();
+            data = DownloadThreadData(fileList, errorList, modListLock, errorListLock)
+            #spawn 4 threads
+            for i in range(0, 4):
+                thr = threading.Thread(target=DownloadModsThread, args=(data,));
+                thr.daemon = True;
+                thr.start();
 
-        #wait for all the threads to finish
-        while (True):
-            if (data.fileDone >= data.fileCount):
-                #then we have finished, display the exit message
-                print("Done!\t\t\t\t\t\t");
-                break;
-            else:
-                #display the progress message and then wait
-                time.sleep(0.1);
-                numBars = int(20*data.fileDone/data.fileCount);
-                progressString = "\t{0}/{1}\t[{2}{3}] {4}%".format(str(data.fileDone), str(data.fileCount), "|"*(numBars), " "*(20-numBars), str(int(100*data.fileDone/data.fileCount)));
-                print(progressString, end="\r")
+            #wait for all the threads to finish
+            while (True):
+                if (data.fileDone >= data.fileCount):
+                    #then we have finished, display the exit message
+                    print("Done!\t\t\t\t\t\t");
+                    break;
+                else:
+                    #display the progress message and then wait
+                    time.sleep(0.1);
+                    numBars = int(20*data.fileDone/data.fileCount);
+                    progressString = "\t{0}/{1}\t[{2}{3}] {4}%".format(str(data.fileDone), str(data.fileCount), "|"*(numBars), " "*(20-numBars), str(int(100*data.fileDone/data.fileCount)));
+                    print(progressString, end="\r")
 
-        errorcount = len(errorList);
-        if (errorcount > 0):
-            print("\nFailed to download " + str(errorcount) + " mods");
-            for e in errorList:
-                print(e);
-        input("Press enter to continue...");
+            errorcount = len(errorList);
+            if (errorcount > 0):
+                print(f"\nFailed to download {str(errorcount)} mods after {downloadRetryCount+1} tries");
+                for e in errorList:
+                    print(e);
+                input("Press enter to retry download or close the installer to cancel...")
+                continue
+            #no error, so dont loop
+            break
 
     if (not noforge):
         #all the mods have been aquired, now to get forge and install it
@@ -327,13 +332,18 @@ def DownloadModsThread(data):
                 filePos = data.filePos;
                 data.filePos += 1
         #should only get here if there is actually a mod to download
-        (error, resultString) = DownloadMod(currFile[0], currFile[1]);
+        for i in range(downloadRetryCount):
+            (error, resultString) = DownloadMod(currFile[0], currFile[1])
+            if (not error):
+                #no error, so dont retry
+                break
         if (error):
             with data.errorListLock:
-                data.errorList.append(f"({filePos})\t{resultString}")
+                data.errorList.append(f"(mod {filePos})\t{resultString}")
         #clear the line then display the result string to the user
-        print(' '*50, end='\r')
-        print(resultString)
+        print(f"{' '*50}\r{resultString}")
+        #print(' '*50, end='\r')
+        #print(resultString)
         with data.fileListLock:
             data.fileDone += 1
             
