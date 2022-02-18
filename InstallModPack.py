@@ -24,13 +24,14 @@ def main():
     #read in the manifest file that will be provided as the second arg, right?
     #do checking of input arguments
     if (len(sys.argv) < 2):
-        print("This program needs to be run from the command line. (Double clicking on it does not work!)");
+        print(sys.stderr, "This program needs to be run from the command line (Double clicking on it does not work!).\n\tExiting...");
         print("Usage: " + sys.argv[0] + " <mod.zip>");
         input("Press enter to continue...");
-        sys.exit();
+        sys.exit(2);
 
     if (not os.path.exists(sys.argv[1])):
-        print("File '" + sys.argv[1] + "' does not exist!");
+        print(sys.stderr, f"Modpack file '{sys.argv[1]}' does not exist! Please check where it is located and try again.\n\tExiting...");
+        sys.exit(2)
 
     nozip = False;
     nodown = False;
@@ -63,19 +64,20 @@ def main():
     #now to do file processing
     exists = os.path.isfile(manifestLoc);
     if (not exists):
-        print("Manifest file cannot be found. Exiting...");
-        sys.exit();
+        print(sys.stderr, "Manifest file cannot be found.\n\tExiting...");
+        sys.exit(1);
 
     try:
         f = open(manifestLoc);
     except:
-        print("Could not open manifest file. Exiting...");
+        print(sys.stderr, f"Could not open manifest file '{manifestLoc}'.\n\tExiting...");
+        sys.exit(1)
 
     try:
         j = json.load(f);
     except:
-        print("File '" + manifestLoc + "' is not a valid json file!");
-        sys.exit();
+        print(sys.stderr, f"File '{manifestLoc}' is not a valid json file!\n\tExiting...");
+        sys.exit(1);
     finally:
         f.close();
 
@@ -94,8 +96,8 @@ def main():
         if (t in ("y", "Y")):
             break;
         elif (t in ("n", "N")):
-            print("Exiting...");
-            sys.exit();
+            print("\tExiting...");
+            sys.exit(0);
         else:
             continue;
 
@@ -134,7 +136,7 @@ def main():
             while (True):
                 if (data.fileDone >= data.fileCount):
                     #then we have finished, display the exit message
-                    print("Done!\t\t\t\t\t\t");
+                    print("Done!                                             ");
                     break;
                 else:
                     #display the progress message and then wait
@@ -145,26 +147,26 @@ def main():
 
             errorcount = len(errorList);
             if (errorcount > 0):
-                print(f"\nFailed to download {str(errorcount)} mods after {downloadRetryCount+1} tries");
+                print(sys.stderr, f"\nFailed to download {str(errorcount)} mods after {downloadRetryCount+1} tries!");
                 for e in errorList:
-                    print(e);
+                    print(sys.stderr, f"\t{e}");
                 input("Press enter to retry download or close the installer to cancel...")
                 continue
             #no error, so dont loop
             break
 
     if (not noforge):
-        #all the mods have been aquired, now to get forge and install it
+        #all the mods have been acquired, now to get forge and install it
         forgename = 'forge-'+minecraftVersion+'-'+forgeVersion+'-installer.jar';
         forgeurl = 'https://files.minecraftforge.net/maven/net/minecraftforge/forge/'+minecraftVersion+'-'+forgeVersion+'/'+forgename;
         print("\nDownloading " + forgename);
         try:
             rec = urllib.request.Request(forgeurl, headers={'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_9_3) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/35.0.1916.47 Safari/537.36'});
             r = urllib.request.urlopen(rec);
-        except urllib.error.HTTPError as err:
-            print("Error downloading forge. Exiting...");
+        except (urllib.error.HTTPError, urllib.error.URLError) as err:
             print(err.fp.read());
-            sys.exit();
+            print(sys.stderr, f"Error downloading forge: {err.reason}\n\tExiting...");
+            sys.exit(1);
 
         forgeF = open(os.path.join(tempDir, forgename), "wb");
         forgeF.write(r.read());
@@ -173,8 +175,8 @@ def main():
         print("Running forge installer (It should come up as a seperate window)");
         ret = subprocess.run(["java", "-jar", os.path.join(tempDir, forgename)], stdout=subprocess.DEVNULL, stderr=subprocess.STDOUT);
         if (ret.returncode != 0):
-            print("Error installing forge");
-            sys.exit();
+            print(sys.stderr, "Error during forge installation\n\tExiting...");
+            sys.exit(1);
 
         input("Press enter when forge has finished installing to continue...\n");
 
@@ -183,9 +185,8 @@ def main():
         profname = "modpack - " + name;
         print("Adding/Replacing profile '"+profname+"'");
         if (not os.path.exists(minecraftProfLoc)):
-            print("WHERE...");
-            print("IS YOUR MINECRAFT PROFILE!!!");
-            sys.exit();
+            print(sys.stderr, f"Could not find your minecraft profile at '{minecraftProfLoc}' (is your minecraft installation at '%appdata%/.minecraft'?)\n\tExiting...")
+            sys.exit(1);
         #find the forge version to ensure that it was actually installed
         forgevname = minecraftVersion+'-forge'+minecraftVersion+'-'+forgeVersion;
         print("\tUsing forge version: " + forgevname);
@@ -194,8 +195,8 @@ def main():
             print("\tOld naming scheme not found, trying new naming scheme...")
             forgevname = minecraftVersion+'-forge'+'-'+forgeVersion;
             if (not os.path.isdir(os.path.join(os.getenv('APPDATA'), ".minecraft", "versions", forgevname))):
-                print("Could not find required forge version (did you install it?). Exiting...");
-                sys.exit();
+                print(sys.stderr, f"Could not find required forge version: {forgevname} (did you install it?).\n\tExiting...");
+                sys.exit(1);
 
         #the profile is where we expect it to be, make a new profile (or overwrite a previous one if the user is stupid enough to name their profile after a mod pack)
         profF = open(minecraftProfLoc, "r");
@@ -212,9 +213,10 @@ def main():
         #check how much memory the user wants to allocate
         print("How much memory do you expect this modpack to use (in GB)? Usually it will say on the modpack page the recommended value.")
         try:
-            mem = float(input("Enter a number between 1-32 (default 4)\n"));
+            mem = float(input("Enter a number between 1.0 - 32.0 (default 4.0)\n"));
         except:
             mem = 4;
+            print("Could not detect a valid value. Setting memory to default of 4GB")
         if (mem < 1):
             mem = 4;
             print("Invalid value! Setting memory to default of 4GB");
@@ -261,7 +263,7 @@ def main():
         #shutil.copy(modsLoc, gamedir);
         CopyReplaceFile(modsLoc, gamemodsdir);
     else:
-        print("OI. DON'T TOUCH MY MODS.");
+        print(sys.stderr, f"Cannot find temp mod download folder (did you delete or move them after I downloaded them?)\n\tExiting...");
         sys.exit();
 
     print("\tInstalling overrides");
@@ -350,7 +352,7 @@ def DownloadModsThread(data):
 
 #(error, reason)
 def DownloadMod(projectID, fileID):
-    #first aquire the download link from the curseforge interface
+    #first acquire the download link from the curseforge interface
     interfaceurl = f"https://addons-ecs.forgesvc.net/api/v2/addon/{projectID}/file/{fileID}/download-url"
     (error, result) = downloadURL(interfaceurl)
     if (error):
@@ -389,6 +391,8 @@ def downloadURL(url):
             return (False, r)
         except urllib.error.HTTPError as e:
             return (True, f"HTTP ERROR {e.code}: {url}")
+        except urllib.error.URLError as err:
+            return (True, f"URL ERROR {err.reason}: {url}")
         except:
             tries += 1;
 
