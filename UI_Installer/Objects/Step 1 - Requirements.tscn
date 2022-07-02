@@ -1,0 +1,211 @@
+[gd_scene load_steps=7 format=2]
+
+[ext_resource path="res://Scripts/Step1/MCInstallDir.gd" type="Script" id=1]
+[ext_resource path="res://Scripts/Step1/ModpackInstructions.gd" type="Script" id=2]
+[ext_resource path="res://Scripts/Step1/JavaCheck.gd" type="Script" id=3]
+[ext_resource path="res://Objects/CustomUI/HeaderLabel.tscn" type="PackedScene" id=4]
+[ext_resource path="res://Objects/CustomUI/InstructionsPanel.tscn" type="PackedScene" id=5]
+[ext_resource path="res://Objects/StepController.gd" type="Script" id=6]
+
+[node name="Step 1" type="Control"]
+size_flags_horizontal = 3
+size_flags_vertical = 3
+script = ExtResource( 6 )
+__meta__ = {
+"_edit_use_anchors_": false
+}
+num_submodules = 3
+module_parent_path = NodePath("HBoxContainer/VBoxContainer")
+
+[node name="HBoxContainer" type="HBoxContainer" parent="."]
+anchor_right = 1.0
+anchor_bottom = 1.0
+size_flags_horizontal = 3
+size_flags_vertical = 3
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="VBoxContainer" type="VBoxContainer" parent="HBoxContainer"]
+margin_right = 375.0
+margin_bottom = 368.0
+size_flags_horizontal = 3
+size_flags_vertical = 3
+
+[node name="JavaCheck" type="PanelContainer" parent="HBoxContainer/VBoxContainer"]
+margin_right = 375.0
+margin_bottom = 90.0
+script = ExtResource( 3 )
+
+[node name="VBoxContainer" type="VBoxContainer" parent="HBoxContainer/VBoxContainer/JavaCheck"]
+margin_left = 7.0
+margin_top = 7.0
+margin_right = 368.0
+margin_bottom = 83.0
+
+[node name="HeaderLabel" parent="HBoxContainer/VBoxContainer/JavaCheck/VBoxContainer" instance=ExtResource( 4 )]
+margin_right = 361.0
+margin_bottom = 18.0
+text = "Java Installation Check"
+
+[node name="JavaResult" type="RichTextLabel" parent="HBoxContainer/VBoxContainer/JavaCheck/VBoxContainer"]
+margin_top = 22.0
+margin_right = 361.0
+margin_bottom = 52.0
+size_flags_horizontal = 3
+size_flags_vertical = 3
+bbcode_enabled = true
+bbcode_text = "Checking for Java...
+"
+text = "Checking for Java...
+"
+fit_content_height = true
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="ButtonCheckJava" type="Button" parent="HBoxContainer/VBoxContainer/JavaCheck/VBoxContainer"]
+margin_top = 56.0
+margin_right = 114.0
+margin_bottom = 76.0
+size_flags_horizontal = 0
+text = "Recheck for Java"
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="MCInstallDir" type="PanelContainer" parent="HBoxContainer/VBoxContainer"]
+margin_top = 94.0
+margin_right = 375.0
+margin_bottom = 225.0
+size_flags_horizontal = 3
+script = ExtResource( 1 )
+
+[node name="FolderDialog" type="FileDialog" parent="HBoxContainer/VBoxContainer/MCInstallDir"]
+anchor_right = 0.9
+anchor_bottom = 0.9
+margin_bottom = 29.2
+popup_exclusive = true
+window_title = "Open a Directory"
+mode = 2
+access = 2
+filters = PoolStringArray( "*.trollolol" )
+show_hidden_files = true
+current_dir = "/"
+current_path = "/"
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="VBoxContainer" type="VBoxContainer" parent="HBoxContainer/VBoxContainer/MCInstallDir"]
+margin_left = 7.0
+margin_top = 7.0
+margin_right = 368.0
+margin_bottom = 124.0
+size_flags_horizontal = 3
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="HeaderLabel" parent="HBoxContainer/VBoxContainer/MCInstallDir/VBoxContainer" instance=ExtResource( 4 )]
+margin_right = 361.0
+margin_bottom = 18.0
+text = "Minecraft Installation Directory"
+
+[node name="DescriptionLabel" type="Label" parent="HBoxContainer/VBoxContainer/MCInstallDir/VBoxContainer"]
+margin_top = 22.0
+margin_right = 361.0
+margin_bottom = 70.0
+text = "This is where Minecraft is currently installed and the new modpack will be installed to. By default it is in %appdata%/.minecraft"
+autowrap = true
+
+[node name="HBoxContainer" type="HBoxContainer" parent="HBoxContainer/VBoxContainer/MCInstallDir/VBoxContainer"]
+margin_top = 74.0
+margin_right = 361.0
+margin_bottom = 98.0
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="MCInstallDir" type="LineEdit" parent="HBoxContainer/VBoxContainer/MCInstallDir/VBoxContainer/HBoxContainer"]
+margin_right = 286.0
+margin_bottom = 24.0
+size_flags_horizontal = 3
+placeholder_text = "Enter Minecraft's installation path here or browse"
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="ButtonOpenFolder" type="Button" parent="HBoxContainer/VBoxContainer/MCInstallDir/VBoxContainer/HBoxContainer"]
+margin_left = 290.0
+margin_right = 361.0
+margin_bottom = 24.0
+text = "Browse..."
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="InstallResult" type="RichTextLabel" parent="HBoxContainer/VBoxContainer/MCInstallDir/VBoxContainer"]
+margin_top = 102.0
+margin_right = 361.0
+margin_bottom = 117.0
+bbcode_enabled = true
+bbcode_text = "Result Unknown"
+text = "Result Unknown"
+fit_content_height = true
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="ModpackInstructions" type="PanelContainer" parent="HBoxContainer/VBoxContainer"]
+margin_top = 229.0
+margin_right = 375.0
+margin_bottom = 368.0
+script = ExtResource( 2 )
+
+[node name="VBoxContainer" type="VBoxContainer" parent="HBoxContainer/VBoxContainer/ModpackInstructions"]
+margin_left = 7.0
+margin_top = 7.0
+margin_right = 368.0
+margin_bottom = 132.0
+
+[node name="HeaderLabel" parent="HBoxContainer/VBoxContainer/ModpackInstructions/VBoxContainer" instance=ExtResource( 4 )]
+margin_right = 361.0
+margin_bottom = 18.0
+text = "Picking Your Modpack"
+
+[node name="RichTextLabel" type="RichTextLabel" parent="HBoxContainer/VBoxContainer/ModpackInstructions/VBoxContainer"]
+margin_top = 22.0
+margin_right = 361.0
+margin_bottom = 97.0
+bbcode_enabled = true
+bbcode_text = "If you have not done this already, now would be a good time to go to CurseForge and pick the modpack you are interested in installing.
+
+[color=aqua][url]https://www.curseforge.com/minecraft/modpacks[/url][/color]"
+text = "If you have not done this already, now would be a good time to go to CurseForge and pick the modpack you are interested in installing.
+
+https://www.curseforge.com/minecraft/modpacks"
+fit_content_height = true
+
+[node name="ModpackSelected" type="CheckBox" parent="HBoxContainer/VBoxContainer/ModpackInstructions/VBoxContainer"]
+margin_top = 101.0
+margin_right = 361.0
+margin_bottom = 125.0
+text = "I solemly swear I know what modpack I want to play"
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="InstructionsPanel" parent="HBoxContainer" instance=ExtResource( 5 )]
+margin_left = 379.0
+margin_right = 579.0
+margin_bottom = 368.0
+header = "Step 1"
+bbcode = "Pre-config and checking of installation requirements."
+
+[connection signal="meta_clicked" from="HBoxContainer/VBoxContainer/JavaCheck/VBoxContainer/JavaResult" to="HBoxContainer/VBoxContainer/JavaCheck" method="_on_JavaResult_meta_clicked"]
+[connection signal="pressed" from="HBoxContainer/VBoxContainer/JavaCheck/VBoxContainer/ButtonCheckJava" to="HBoxContainer/VBoxContainer/JavaCheck" method="_on_ButtonCheckJava_pressed"]
+[connection signal="dir_selected" from="HBoxContainer/VBoxContainer/MCInstallDir/FolderDialog" to="HBoxContainer/VBoxContainer/MCInstallDir" method="_on_FolderDialog_dir_selected"]
+[connection signal="pressed" from="HBoxContainer/VBoxContainer/MCInstallDir/VBoxContainer/HBoxContainer/ButtonOpenFolder" to="HBoxContainer/VBoxContainer/MCInstallDir" method="_on_ButtonOpenFolder_pressed"]
+[connection signal="meta_clicked" from="HBoxContainer/VBoxContainer/ModpackInstructions/VBoxContainer/RichTextLabel" to="HBoxContainer/VBoxContainer/ModpackInstructions" method="_on_RichTextLabel_meta_clicked"]
+[connection signal="toggled" from="HBoxContainer/VBoxContainer/ModpackInstructions/VBoxContainer/ModpackSelected" to="HBoxContainer/VBoxContainer/ModpackInstructions" method="_on_ModpackSelected_toggled"]

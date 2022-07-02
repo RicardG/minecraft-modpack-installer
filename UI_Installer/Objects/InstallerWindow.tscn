@@ -1,0 +1,105 @@
+[gd_scene load_steps=5 format=2]
+
+[ext_resource path="res://Objects/NextTabFooter.gd" type="Script" id=1]
+[ext_resource path="res://Objects/Step 1 - Requirements.tscn" type="PackedScene" id=2]
+[ext_resource path="res://Themes/NextButton.tres" type="Theme" id=3]
+[ext_resource path="res://Scripts/InstallerWindow.gd" type="Script" id=4]
+
+[node name="InstallerWindow" type="Control"]
+anchor_right = 1.0
+anchor_bottom = 1.0
+size_flags_horizontal = 3
+size_flags_vertical = 3
+script = ExtResource( 4 )
+__meta__ = {
+"_edit_use_anchors_": false
+}
+module_parent_path = NodePath("ScrollContainer/VBoxContainer/StepTabs")
+
+[node name="ScrollContainer" type="ScrollContainer" parent="."]
+anchor_right = 1.0
+anchor_bottom = 1.0
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="VBoxContainer" type="VBoxContainer" parent="ScrollContainer"]
+margin_right = 1024.0
+margin_bottom = 600.0
+size_flags_horizontal = 3
+size_flags_vertical = 3
+
+[node name="StepTabs" type="TabContainer" parent="ScrollContainer/VBoxContainer"]
+margin_right = 1024.0
+margin_bottom = 556.0
+size_flags_horizontal = 3
+size_flags_vertical = 3
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="Step 1" parent="ScrollContainer/VBoxContainer/StepTabs" instance=ExtResource( 2 )]
+anchor_right = 1.0
+anchor_bottom = 1.0
+margin_left = 4.0
+margin_top = 32.0
+margin_right = -4.0
+margin_bottom = -4.0
+
+[node name="NextTabFooter" type="PanelContainer" parent="ScrollContainer/VBoxContainer"]
+margin_top = 560.0
+margin_right = 1024.0
+margin_bottom = 600.0
+rect_min_size = Vector2( 0, 40 )
+size_flags_vertical = 0
+script = ExtResource( 1 )
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="HBoxContainer" type="HBoxContainer" parent="ScrollContainer/VBoxContainer/NextTabFooter"]
+margin_left = 7.0
+margin_top = 7.0
+margin_right = 1017.0
+margin_bottom = 33.0
+grow_vertical = 0
+size_flags_horizontal = 3
+size_flags_vertical = 3
+alignment = 2
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="LabelDescription" type="Label" parent="ScrollContainer/VBoxContainer/NextTabFooter/HBoxContainer"]
+margin_left = 748.0
+margin_right = 903.0
+margin_bottom = 26.0
+size_flags_vertical = 5
+text = "You are all good to start!"
+valign = 1
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="Spacer" type="Control" parent="ScrollContainer/VBoxContainer/NextTabFooter/HBoxContainer"]
+margin_left = 907.0
+margin_right = 932.0
+margin_bottom = 26.0
+rect_min_size = Vector2( 25, 0 )
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="ButtonNext" type="Button" parent="ScrollContainer/VBoxContainer/NextTabFooter/HBoxContainer"]
+margin_left = 936.0
+margin_right = 1010.0
+margin_bottom = 26.0
+theme = ExtResource( 3 )
+text = "Next Step"
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[connection signal="completed" from="." to="." method="_on_InstallerWindow_completed"]
+[connection signal="invalid" from="." to="." method="_on_InstallerWindow_invalid"]
+[connection signal="pressed" from="ScrollContainer/VBoxContainer/NextTabFooter/HBoxContainer/ButtonNext" to="." method="_on_ButtonNext_pressed"]
