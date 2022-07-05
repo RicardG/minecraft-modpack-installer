@@ -11,7 +11,7 @@ func _ready():
 	# Perform a GET request.
 	#im not a bot lol
 	var ua := "User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:101.0) Gecko/20100101 Firefox/101.0"
-	var error :int = http_request.request("http://192.168.0.21", [ua])#"https://www.google.com.au")
+	var error :int = http_request.request("http://192.168.0.21", [ua])
 	if error != OK:
 		push_error("An error occurred in the HTTP request.")
 

@@ -34,3 +34,7 @@ func _on_FolderDialog_dir_selected(dir: String) -> void:
 
 func _on_ButtonOpenFolder_pressed() -> void:
 	o_folder_dialog.popup_centered()
+
+
+func _on_MCInstallDir_text_entered(new_text: String) -> void:
+	_check_install_dir(new_text)

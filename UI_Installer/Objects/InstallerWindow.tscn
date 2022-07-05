@@ -1,9 +1,10 @@
-[gd_scene load_steps=5 format=2]
+[gd_scene load_steps=6 format=2]
 
 [ext_resource path="res://Objects/NextTabFooter.gd" type="Script" id=1]
-[ext_resource path="res://Objects/Step 1 - Requirements.tscn" type="PackedScene" id=2]
+[ext_resource path="res://Objects/Step1.tscn" type="PackedScene" id=2]
 [ext_resource path="res://Themes/NextButton.tres" type="Theme" id=3]
 [ext_resource path="res://Scripts/InstallerWindow.gd" type="Script" id=4]
+[ext_resource path="res://Objects/Step2.tscn" type="PackedScene" id=5]
 
 [node name="InstallerWindow" type="Control"]
 anchor_right = 1.0
@@ -38,7 +39,16 @@ __meta__ = {
 "_edit_use_anchors_": false
 }
 
-[node name="Step 1" parent="ScrollContainer/VBoxContainer/StepTabs" instance=ExtResource( 2 )]
+[node name="Step1" parent="ScrollContainer/VBoxContainer/StepTabs" instance=ExtResource( 2 )]
+anchor_right = 1.0
+anchor_bottom = 1.0
+margin_left = 4.0
+margin_top = 32.0
+margin_right = -4.0
+margin_bottom = -4.0
+
+[node name="Step2" parent="ScrollContainer/VBoxContainer/StepTabs" instance=ExtResource( 5 )]
+visible = false
 anchor_right = 1.0
 anchor_bottom = 1.0
 margin_left = 4.0

@@ -1,0 +1,170 @@
+[gd_scene load_steps=7 format=2]
+
+[ext_resource path="res://Scripts/Step2/SearchURL.gd" type="Script" id=1]
+[ext_resource path="res://Objects/CustomUI/ModpackPanel.tscn" type="PackedScene" id=2]
+[ext_resource path="res://Scripts/Step2/DirectURL.gd" type="Script" id=3]
+[ext_resource path="res://Objects/CustomUI/HeaderLabel.tscn" type="PackedScene" id=4]
+[ext_resource path="res://Objects/CustomUI/InstructionsPanel.tscn" type="PackedScene" id=5]
+[ext_resource path="res://Objects/StepController.gd" type="Script" id=6]
+
+[node name="Step2" type="Control"]
+rect_min_size = Vector2( 400, 200 )
+size_flags_horizontal = 3
+size_flags_vertical = 3
+script = ExtResource( 6 )
+__meta__ = {
+"_edit_use_anchors_": false
+}
+module_parent_path = NodePath("HBoxContainer/VBoxContainer")
+
+[node name="HBoxContainer" type="HBoxContainer" parent="."]
+anchor_right = 1.0
+anchor_bottom = 1.0
+size_flags_horizontal = 3
+size_flags_vertical = 3
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="VBoxContainer" type="VBoxContainer" parent="HBoxContainer"]
+margin_right = 196.0
+margin_bottom = 449.0
+size_flags_horizontal = 3
+size_flags_vertical = 3
+
+[node name="DirectURL" type="PanelContainer" parent="HBoxContainer/VBoxContainer"]
+margin_right = 196.0
+margin_bottom = 112.0
+script = ExtResource( 3 )
+
+[node name="HTTPRequest" type="HTTPRequest" parent="HBoxContainer/VBoxContainer/DirectURL"]
+
+[node name="VBoxContainer" type="VBoxContainer" parent="HBoxContainer/VBoxContainer/DirectURL"]
+margin_left = 7.0
+margin_top = 7.0
+margin_right = 189.0
+margin_bottom = 105.0
+
+[node name="HeaderLabel" parent="HBoxContainer/VBoxContainer/DirectURL/VBoxContainer" instance=ExtResource( 4 )]
+margin_right = 182.0
+margin_bottom = 18.0
+text = "Direct Modpack URL"
+
+[node name="Label" type="Label" parent="HBoxContainer/VBoxContainer/DirectURL/VBoxContainer"]
+margin_top = 22.0
+margin_right = 182.0
+margin_bottom = 36.0
+text = "Insert modpack URL here"
+autowrap = true
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="HBoxContainer" type="HBoxContainer" parent="HBoxContainer/VBoxContainer/DirectURL/VBoxContainer"]
+margin_top = 40.0
+margin_right = 182.0
+margin_bottom = 64.0
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="PackURL" type="LineEdit" parent="HBoxContainer/VBoxContainer/DirectURL/VBoxContainer/HBoxContainer"]
+margin_right = 99.0
+margin_bottom = 24.0
+size_flags_horizontal = 3
+placeholder_text = "https://www.curseforge.com/minecraft/modpacks/<packname>"
+
+[node name="ButtonCheckURL" type="Button" parent="HBoxContainer/VBoxContainer/DirectURL/VBoxContainer/HBoxContainer"]
+margin_left = 103.0
+margin_right = 182.0
+margin_bottom = 24.0
+text = "Check URL"
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="URLResult" type="RichTextLabel" parent="HBoxContainer/VBoxContainer/DirectURL/VBoxContainer"]
+margin_top = 68.0
+margin_right = 182.0
+margin_bottom = 98.0
+bbcode_enabled = true
+bbcode_text = "Insert a URL and hit 'Check URL'"
+text = "Insert a URL and hit 'Check URL'"
+fit_content_height = true
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="SearchURL" type="PanelContainer" parent="HBoxContainer/VBoxContainer"]
+margin_top = 116.0
+margin_right = 196.0
+margin_bottom = 449.0
+script = ExtResource( 1 )
+
+[node name="VBoxContainer" type="VBoxContainer" parent="HBoxContainer/VBoxContainer/SearchURL"]
+margin_left = 7.0
+margin_top = 7.0
+margin_right = 189.0
+margin_bottom = 326.0
+
+[node name="HeaderLabel" parent="HBoxContainer/VBoxContainer/SearchURL/VBoxContainer" instance=ExtResource( 4 )]
+margin_right = 182.0
+margin_bottom = 18.0
+text = "Search Modpacks"
+
+[node name="Label" type="Label" parent="HBoxContainer/VBoxContainer/SearchURL/VBoxContainer"]
+margin_top = 22.0
+margin_right = 182.0
+margin_bottom = 87.0
+text = "Search by modpack name. This will return the first page of results from CurseForge."
+autowrap = true
+
+[node name="HBoxContainer" type="HBoxContainer" parent="HBoxContainer/VBoxContainer/SearchURL/VBoxContainer"]
+margin_top = 91.0
+margin_right = 182.0
+margin_bottom = 115.0
+
+[node name="ModpackSearch" type="LineEdit" parent="HBoxContainer/VBoxContainer/SearchURL/VBoxContainer/HBoxContainer"]
+margin_right = 124.0
+margin_bottom = 24.0
+size_flags_horizontal = 3
+placeholder_text = "<Modpack name>"
+
+[node name="ButtonSearch" type="Button" parent="HBoxContainer/VBoxContainer/SearchURL/VBoxContainer/HBoxContainer"]
+margin_left = 128.0
+margin_right = 182.0
+margin_bottom = 24.0
+text = "Search"
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="ScrollContainer" type="ScrollContainer" parent="HBoxContainer/VBoxContainer/SearchURL/VBoxContainer"]
+margin_top = 119.0
+margin_right = 182.0
+margin_bottom = 319.0
+rect_min_size = Vector2( 0, 200 )
+
+[node name="VBoxContainer" type="VBoxContainer" parent="HBoxContainer/VBoxContainer/SearchURL/VBoxContainer/ScrollContainer"]
+margin_right = 182.0
+margin_bottom = 111.0
+size_flags_horizontal = 3
+
+[node name="PanelContainer" parent="HBoxContainer/VBoxContainer/SearchURL/VBoxContainer/ScrollContainer/VBoxContainer" instance=ExtResource( 2 )]
+
+[node name="InstructionsPanel" parent="HBoxContainer" instance=ExtResource( 5 )]
+margin_left = 200.0
+margin_right = 400.0
+margin_bottom = 449.0
+header = "Step 2"
+bbcode = "Select the modpack you want to install. You can do this in two ways.
+
+Option 1:
+Directly copy-pasting the modpack URL. If you are already on the modpack's webpage you can copy the link into the bar under Direct Modpack URL. Make sure to hit the 'Check URL' button afterwards to confirm the URL is valid before you can proceed to the next step.
+
+Option 2:
+Searching for the modpack by name. Use the bottom module to search for the modpack and select the correct one in the resulting list. Its URL will be filled into the bar at the top."
+
+[connection signal="request_completed" from="HBoxContainer/VBoxContainer/DirectURL/HTTPRequest" to="HBoxContainer/VBoxContainer/DirectURL" method="_on_HTTPRequest_request_completed"]
+[connection signal="text_entered" from="HBoxContainer/VBoxContainer/DirectURL/VBoxContainer/HBoxContainer/PackURL" to="HBoxContainer/VBoxContainer/DirectURL" method="_on_PackURL_text_entered"]
+[connection signal="pressed" from="HBoxContainer/VBoxContainer/DirectURL/VBoxContainer/HBoxContainer/ButtonCheckURL" to="HBoxContainer/VBoxContainer/DirectURL" method="_on_ButtonCheckURL_pressed"]

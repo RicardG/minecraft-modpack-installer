@@ -7,7 +7,8 @@
 [ext_resource path="res://Objects/CustomUI/InstructionsPanel.tscn" type="PackedScene" id=5]
 [ext_resource path="res://Objects/StepController.gd" type="Script" id=6]
 
-[node name="Step 1" type="Control"]
+[node name="Step1" type="Control"]
+rect_min_size = Vector2( 400, 200 )
 size_flags_horizontal = 3
 size_flags_vertical = 3
 script = ExtResource( 6 )
@@ -206,6 +207,7 @@ bbcode = "Pre-config and checking of installation requirements."
 [connection signal="meta_clicked" from="HBoxContainer/VBoxContainer/JavaCheck/VBoxContainer/JavaResult" to="HBoxContainer/VBoxContainer/JavaCheck" method="_on_JavaResult_meta_clicked"]
 [connection signal="pressed" from="HBoxContainer/VBoxContainer/JavaCheck/VBoxContainer/ButtonCheckJava" to="HBoxContainer/VBoxContainer/JavaCheck" method="_on_ButtonCheckJava_pressed"]
 [connection signal="dir_selected" from="HBoxContainer/VBoxContainer/MCInstallDir/FolderDialog" to="HBoxContainer/VBoxContainer/MCInstallDir" method="_on_FolderDialog_dir_selected"]
+[connection signal="text_entered" from="HBoxContainer/VBoxContainer/MCInstallDir/VBoxContainer/HBoxContainer/MCInstallDir" to="HBoxContainer/VBoxContainer/MCInstallDir" method="_on_MCInstallDir_text_entered"]
 [connection signal="pressed" from="HBoxContainer/VBoxContainer/MCInstallDir/VBoxContainer/HBoxContainer/ButtonOpenFolder" to="HBoxContainer/VBoxContainer/MCInstallDir" method="_on_ButtonOpenFolder_pressed"]
 [connection signal="meta_clicked" from="HBoxContainer/VBoxContainer/ModpackInstructions/VBoxContainer/RichTextLabel" to="HBoxContainer/VBoxContainer/ModpackInstructions" method="_on_RichTextLabel_meta_clicked"]
 [connection signal="toggled" from="HBoxContainer/VBoxContainer/ModpackInstructions/VBoxContainer/ModpackSelected" to="HBoxContainer/VBoxContainer/ModpackInstructions" method="_on_ModpackSelected_toggled"]
