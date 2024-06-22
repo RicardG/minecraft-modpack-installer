@@ -348,29 +348,43 @@ def DownloadModsThread(data):
         #print(resultString)
         with data.fileListLock:
             data.fileDone += 1
-            
+
 
 #(error, reason)
 def DownloadMod(projectID, fileID):
     #first acquire the download link from the curseforge interface
-    interfaceurl = f"https://addons-ecs.forgesvc.net/api/v2/addon/{projectID}/file/{fileID}/download-url"
+    interfaceurl = f"https://api.curse.tools/v1/cf/mods/{projectID}/files/{fileID}/download-url"
     (error, result) = downloadURL(interfaceurl)
     if (error):
         return (True, f"An issue was encountered when trying to retrieve a download link\n\t{result}")
 
     #result should contain the result object with the link to the mod file
     link = result.read().decode('utf-8')
-    match = re.findall(r"^(https?://)(.*)", link)
-    downloadLink = match[0][0] + urllib.parse.quote(match[0][1])
+    match = re.findall(r"(https?://)(.*[^\"}])", link)
+    # match = re.sub("%2520", " ", match)
+    # downloadLink = match[0][0] + urllib.parse.quote(match[0][1])
+    # parsing sometimes messes up spaces
+    downloadLink, error, result = None, None, None
+    try:
+        # see if the link contains unescaped spaces:
+        index = match[0][1].find(" ")
+        if index == -1:
+            downloadLink = match[0][0] + match[0][1]
+        else:
+            downloadLink = match[0][0] + urllib.parse.quote(match[0][1])
+
+    except IndexError:
+        return True, f"An issue was encountered when trying to parse URL\n\t{link}\nFrom:\n\t{interfaceurl}"
+
     (error, result) = downloadURL(downloadLink)
-    if (error):
-        return (True, f"An issue was encountered when trying download a mod\n\t{result}")
 
+    if error:
+        return True, f"An issue was encountered when trying download a mod\n\t{result}"
 
-    #we got the mod boyz, lets get to writing files!
+    # we got the mod boyz, lets get to writing files!
     modName = re.findall(r'[^/]*$', result.geturl())[0]
     modName = urllib.parse.unquote(modName)
-    #print(str(count) + "/" + str(num) + "\t" + modName)
+    # print(str(count) + "/" + str(num) + "\t" + modName)
     modName = re.sub(r'\\/:\*\?"<>\|', "-", modName)
     modF = open(os.path.join(modsLoc, modName), "wb")
     modF.write(result.read())
@@ -379,11 +393,12 @@ def DownloadMod(projectID, fileID):
 
 #given a url, will try and download it, returns (error, requestobject/string)
 def downloadURL(url):
+    if url is None:
+        return True, "EMPTY URL"
     #im not a bot lol
-    agent = 'Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:67.0) Gecko/20100101 Firefox/67.0'
+    agent = 'Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:127.0) Gecko/20100101 Firefox/127.0'
     tries = 0
-    rec = urllib.request.Request(url, headers={'User-Agent': agent})
-    
+
     while (tries < 3):
         try:
             rec = urllib.request.Request(url, headers={'User-Agent': agent})
