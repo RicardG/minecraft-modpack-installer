@@ -361,12 +361,11 @@ def DownloadMod(projectID, fileID):
     #result should contain the result object with the link to the mod file
     link = result.read().decode('utf-8')
     match = re.findall(r"(https?://)(.*[^\"}])", link)
-    # match = re.sub("%2520", " ", match)
-    # downloadLink = match[0][0] + urllib.parse.quote(match[0][1])
-    # parsing sometimes messes up spaces
+
     downloadLink, error, result = None, None, None
     try:
-        # see if the link contains unescaped spaces:
+        # see if the link contains unescaped spaces
+        # (otherwise we would quote quoted spaces, resulting in an incorrect url)
         index = match[0][1].find(" ")
         if index == -1:
             downloadLink = match[0][0] + match[0][1]
@@ -374,7 +373,22 @@ def DownloadMod(projectID, fileID):
             downloadLink = match[0][0] + urllib.parse.quote(match[0][1])
 
     except IndexError:
-        return True, f"An issue was encountered when trying to parse URL\n\t{link}\nFrom:\n\t{interfaceurl}"
+        # getting "{"ok":True}" link here, unsure why
+        # here is a dirty workaround though:
+        # notice the lack of "download-url" at the end
+        interfaceurl = f"https://api.curse.tools/v1/cf/mods/{projectID}/files/{fileID}/"
+        (error, result) = downloadURL(interfaceurl)
+        if (error):
+            return (True, f"An issue was encountered when trying to retrieve a download link\n\t{result}")
+        link = result.read().decode('utf-8')
+        # a lot of data here
+        match = re.findall(r'("downloadUrl":")(https?://)(.*?)(\")', link)
+
+        index = match[0][2].find(" ")
+        if index == -1:
+            downloadLink = match[0][1] + match[0][2]
+        else:
+            downloadLink = match[0][1] + urllib.parse.quote(match[0][2])
 
     (error, result) = downloadURL(downloadLink)
 
